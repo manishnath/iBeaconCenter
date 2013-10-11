@@ -54,6 +54,13 @@
 #pragma mark - Beacon Range
 -(void)startRanging{
     
+    //Check if monitoring is available or not
+    if (![CLLocationManager isMonitoringAvailableForClass:[CLBeaconRegion class]]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Monitoring not available" message:nil delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+        [alert show];
+        return;
+    }
+    
     if (_locationManager!=nil) {
         if(region){
             region.notifyOnEntry = YES;
