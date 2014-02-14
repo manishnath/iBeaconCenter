@@ -16,11 +16,11 @@ static int broadcastpower = -59;
     CLLocationManager *_locationManager;
     NSUUID *_uuid;
     NSNumber *_power;
-    CLBeaconRegion *region;
+    
     CBPeripheralManager *_peripheralManager;
     
 }
-
+@property (strong,readwrite) CLBeaconRegion *region;
 -(IBAction)toggleRanging:(UISwitch *)rangingSwitch;
 -(IBAction)toggleBroadcasting:(UISwitch *)broadcastingSwitch;
 @end
