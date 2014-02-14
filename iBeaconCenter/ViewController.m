@@ -62,25 +62,25 @@
     }
     
     if (_locationManager!=nil) {
-        if(region){
-            region.notifyOnEntry = YES;
-            region.notifyOnExit = YES;
-            region.notifyEntryStateOnDisplay = YES;
-            [_locationManager startMonitoringForRegion:region];
-            [_locationManager startRangingBeaconsInRegion:region];
+        if(_region){
+            _region.notifyOnEntry = YES;
+            _region.notifyOnExit = YES;
+            _region.notifyEntryStateOnDisplay = YES;
+            [_locationManager startMonitoringForRegion:_region];
+            [_locationManager startRangingBeaconsInRegion:_region];
             
         }
         else{
             _uuid = [[NSUUID alloc] initWithUUIDString:@"E2C56DB5-DFFB-48D2-B060-D0F5A71096E0"];
             _locationManager = [[CLLocationManager alloc] init];
             _locationManager.delegate = self;
-            region = [[CLBeaconRegion alloc] initWithProximityUUID:_uuid identifier:@"COM.SELF.ID"];
-            if(region){
-                region.notifyOnEntry = YES;
-                region.notifyOnExit = YES;
-                region.notifyEntryStateOnDisplay = YES;
-                [_locationManager startMonitoringForRegion:region];
-                [_locationManager startRangingBeaconsInRegion:region];
+            _region = [[CLBeaconRegion alloc] initWithProximityUUID:_uuid identifier:@"COM.SELF.ID"];
+            if(_region){
+                _region.notifyOnEntry = YES;
+                _region.notifyOnExit = YES;
+                _region.notifyEntryStateOnDisplay = YES;
+                [_locationManager startMonitoringForRegion:_region];
+                [_locationManager startRangingBeaconsInRegion:_region];
                 
             }
         }
@@ -89,13 +89,13 @@
         _uuid = [[NSUUID alloc] initWithUUIDString:@"E2C56DB5-DFFB-48D2-B060-D0F5A71096E0"];
         _locationManager = [[CLLocationManager alloc] init];
         _locationManager.delegate = self;
-        region = [[CLBeaconRegion alloc] initWithProximityUUID:_uuid identifier:@"COM.SELF.ID"];
-        if(region){
-            region.notifyOnEntry = YES;
-            region.notifyOnExit = YES;
-            region.notifyEntryStateOnDisplay = YES;
-            [_locationManager startMonitoringForRegion:region];
-            [_locationManager startRangingBeaconsInRegion:region];
+        _region = [[CLBeaconRegion alloc] initWithProximityUUID:_uuid identifier:@"COM.SELF.ID"];
+        if(_region){
+            _region.notifyOnEntry = YES;
+            _region.notifyOnExit = YES;
+            _region.notifyEntryStateOnDisplay = YES;
+            [_locationManager startMonitoringForRegion:_region];
+            [_locationManager startRangingBeaconsInRegion:_region];
             
         }
     }
@@ -104,8 +104,8 @@
 
 
 -(void)stopRanging{
-    [_locationManager stopRangingBeaconsInRegion:region];
-    [_locationManager stopMonitoringForRegion:region];
+    [_locationManager stopRangingBeaconsInRegion:_region];
+    [_locationManager stopMonitoringForRegion:_region];
 }
 
 #pragma mark - Beacon broadcast
@@ -169,8 +169,8 @@
 #pragma mark - Location manager beacon region delegate
 
 -(void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region{
-    NSLog(@"Enter Region  @",region);
-    [_locationManager startRangingBeaconsInRegion:region];
+    NSLog(@"Enter Region  %@",(CLBeaconRegion *)region.identifier);
+    [_locationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
     [self sendLocalNotificationForReqgionConfirmationWithText:@"REGION INSIDE"];
     [self setinrangeColor];
 }
@@ -178,7 +178,7 @@
 -(void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region{
     NSLog(@"Exit Region  %@",region);
     [self sendLocalNotificationForReqgionConfirmationWithText:@"REGION OUTSIDE"];
-    [_locationManager stopRangingBeaconsInRegion:region];
+    [_locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
     [self setoutofrangeColor];
 }
 
@@ -190,18 +190,19 @@
 
 - (void)locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region{
     if (state == CLRegionStateInside) {
-        [_locationManager startRangingBeaconsInRegion:region];
+        [_locationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
         [self sendLocalNotificationForReqgionConfirmationWithText:@"REGION INSIDE"];
         [self setinrangeColor];
     }
     else{
         //[[BluetoothManager shared] scan];
         [self sendLocalNotificationForReqgionConfirmationWithText:@"REGION OUTSIDE"];
-        [_locationManager stopRangingBeaconsInRegion:region];
+        [_locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
         [self setoutofrangeColor];
         
     }
     //[_locationManager startRangingBeaconsInRegion:region];
+
     
 }
 
@@ -250,7 +251,7 @@
     localNotif.alertAction = NSLocalizedString(@"View Details", nil);
     
     localNotif.applicationIconBadgeNumber = 1;
-    
+    localNotif.fireDate=[[NSDate alloc] initWithTimeIntervalSinceNow:10.0];
     NSDictionary *infoDict = [NSDictionary dictionaryWithObject:text forKey:@"KEY"];
     localNotif.userInfo = infoDict;
     
