@@ -202,6 +202,7 @@
         
     }
     //[_locationManager startRangingBeaconsInRegion:region];
+
     
 }
 
@@ -250,7 +251,7 @@
     localNotif.alertAction = NSLocalizedString(@"View Details", nil);
     
     localNotif.applicationIconBadgeNumber = 1;
-    
+    localNotif.fireDate=[[NSDate alloc] initWithTimeIntervalSinceNow:10.0];
     NSDictionary *infoDict = [NSDictionary dictionaryWithObject:text forKey:@"KEY"];
     localNotif.userInfo = infoDict;
     
